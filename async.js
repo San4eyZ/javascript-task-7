@@ -17,6 +17,9 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
     let completed = 0;
 
     return new Promise(function (resolve) {
+        if (!jobs.length) {
+            resolve([]);
+        }
         startJobs.forEach(function (job, i) {
             makePromise(preparePromise(job), i, resolve);
         });
