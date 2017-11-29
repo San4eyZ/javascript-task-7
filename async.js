@@ -10,10 +10,9 @@ exports.runParallel = runParallel;
  * @returns {Promise}
  */
 function runParallel(jobs, parallelNum, timeout = 1000) {
-    let actions = [...jobs];
     let result = [];
     let nextIndex = parallelNum;
-    let startJobs = actions.splice(0, parallelNum);
+    let startJobs = jobs.slice(0, parallelNum);
     let completed = 0;
 
     return new Promise(function (resolve) {
@@ -46,7 +45,7 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
             return;
         }
         if (nextIndex < jobs.length) {
-            makePromise(preparePromise(actions.shift()), nextIndex++, initCallback);
+            makePromise(preparePromise(jobs[nextIndex]), nextIndex++, initCallback);
         }
     }
 }
