@@ -14,6 +14,7 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
     let result = [];
     let nextIndex = parallelNum;
     let startJobs = actions.splice(0, parallelNum);
+    let completed = 0;
 
     return new Promise(function (resolve) {
         startJobs.forEach(function (job, i) {
@@ -36,14 +37,13 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
     }
     function writePromiseResult(index, initCallback, data) {
         result[index] = data;
-        if (!actions.length) {
-            setTimeout(function () {
-                initCallback(result);
-            }, timeout);
+        if (jobs.length === ++completed) {
+            initCallback(result);
 
             return;
         }
-        makePromise(preparePromise(actions.shift()), nextIndex++, initCallback);
+        if (nextIndex < jobs.length) {
+            makePromise(preparePromise(actions.shift()), nextIndex++, initCallback);
+        }
     }
 }
-
