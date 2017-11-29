@@ -38,12 +38,12 @@ function runParallel(jobs, parallelNum) {
         return Promise.resolve([].concat(...resArray));
     });
     function makePromise(action) {
-        return new Promise(function (res) {
+        return new Promise(function (res, rej) {
             try {
                 let result = action();
                 res(result);
             } catch (e) {
-                res(e);
+                rej(e);
             }
         });
     }
