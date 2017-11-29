@@ -23,7 +23,12 @@ function runParallel(jobs, parallelNum) {
                 resArray.push(prevData);
             }
 
-            return Promise.all(parallelActions.map(makePromise));
+            return Promise.all(parallelActions.map(catchError))
+                .catch(function (error) {
+                    resArray.push(error);
+
+                    return error;
+                });
         });
     });
 
@@ -40,6 +45,11 @@ function runParallel(jobs, parallelNum) {
             } catch (e) {
                 res(e);
             }
+        });
+    }
+    function catchError(action) {
+        return Promise.resolve(makePromise(action)).catch(function (error) {
+            return error;
         });
     }
 }
